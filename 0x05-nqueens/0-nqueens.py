@@ -1,38 +1,23 @@
 #!/usr/bin/python3
 """
-The N queens puzzle is the challenge of placing N non-attacking queens.
+N-Queens Puzzle Solution
+Solves for N non-attacking queens in an NxN chessboard.
 """
-
 import sys
 
+def queens(N, row=0, col_set=set(), pos_diag_set=set(), neg_diag_set=set()):
 
-def solveNQueens(N):
-    """Solve N queens"""
-    col = []
-    post_diag = []  # row + col
-    neg_diag = []  # row - col
-    res = []
+    if row == N:
+        yield [[r, c] for r, c in enumerate(col_set)]
+    else:
+        for col in range(N):
+            pos_diag = row + col
+            neg_diag = row - col
+            if col not in col_set and pos_diag not in pos_diag_set and neg_diag not in neg_diag_set:
+                yield from queens(N, row + 1, col_set | {col}, pos_diag_set | {pos_diag}, neg_diag_set | {neg_diag})
 
-    def solve(row):
-        """Solve recursively"""
-        if row == N:
-            res.append([[i, col[i]] for i in range(N)])
-            return
-        for i in range(N):
-            if (i not in col and row + i not in post_diag and row - i not in neg_diag):
-                col.append(i)
-                post_diag.append(row + i)
-                neg_diag.append(row - i)
-                solve(row + 1)
-                col.pop()
-                post_diag.pop()
-                neg_diag.pop()
+def main():
 
-    solve(0)
-    return res
-
-
-if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
@@ -44,6 +29,8 @@ if __name__ == "__main__":
         print("N must be at least 4")
         sys.exit(1)
 
-    res = solveNQueens(N)
-    for solution in res:
+    for solution in queens(N):
         print(solution)
+
+if __name__ == "__main__":
+    main()
