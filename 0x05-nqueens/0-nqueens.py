@@ -1,9 +1,38 @@
 #!/usr/bin/python3
-""" N-Queens Puzzle Solver """
+"""
+The N queens puzzle is the challenge of placing N non-attacking queens.
+"""
+
 import sys
 
-def validate_input():
-    """Validate command-line input"""
+
+def solveNQueens(N):
+    """Solve N queens"""
+    col = []
+    post_diag = []  # row + col
+    neg_diag = []  # row - col
+    res = []
+
+    def solve(row):
+        """Solve recursively"""
+        if row == N:
+            res.append([[i, col[i]] for i in range(N)])
+            return
+        for i in range(N):
+            if (i not in col and row + i not in post_diag and row - i not in neg_diag):
+                col.append(i)
+                post_diag.append(row + i)
+                neg_diag.append(row - i)
+                solve(row + 1)
+                col.pop()
+                post_diag.pop()
+                neg_diag.pop()
+
+    solve(0)
+    return res
+
+
+if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
@@ -14,37 +43,7 @@ def validate_input():
     if N < 4:
         print("N must be at least 4")
         sys.exit(1)
-    return N
 
-def solveNQueens(N):
-    """Solve the N-Queens problem"""
-    col, pos_diag, neg_diag = set(), set(), set()  # use sets for efficiency
-    solutions = []
-
-    def backtrack(row):
-        if row == N:
-            solutions.append([[i, c] for i, c in enumerate(col)])
-            return
-        for c in range(N):
-            if c in col or (row + c) in pos_diag or (row - c) in neg_diag:
-                continue
-            col.add(c)
-            pos_diag.add(row + c)
-            neg_diag.add(row - c)
-            backtrack(row + 1)
-            col.remove(c)
-            pos_diag.remove(row + c)
-            neg_diag.remove(row - c)
-
-    backtrack(0)
-    return solutions
-
-def main():
-    """Main function"""
-    N = validate_input()
-    solutions = solveNQueens(N)
-    for solution in solutions:
+    res = solveNQueens(N)
+    for solution in res:
         print(solution)
-
-if __name__ == "__main__":
-    main()
