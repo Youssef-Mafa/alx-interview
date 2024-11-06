@@ -10,8 +10,8 @@ def solveNQueens(N):
     """Solve the N Queens problem using backtracking."""
     solutions = []
     col = set()
-    pos_diag = set() 
-    neg_diag = set() 
+    pos_diag = set()  # (row + col)
+    neg_diag = set()  # (row - col)
 
     def backtrack(row, current_solution):
         """Recursively place queens."""
